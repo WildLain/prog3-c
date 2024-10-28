@@ -12,7 +12,7 @@ int main(void)
         w = new_w;
     } while (abstand > 1e-7L);
 
-    printf("%Lg", w);
+    printf("%Lg \n", w);
     return 0;
 }
 
