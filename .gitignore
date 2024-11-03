@@ -10,7 +10,5 @@
 /test
 /b02a01
 /b02a01.dSYM
-b0202
-b0202.dSYM/Contents/Info.plist
-b0202.dSYM/Contents/Resources/DWARF/b0202
-b0202.dSYM/Contents/Resources/Relocations/x86_64/b0202.yml
+/b02a02
+/b02a02.dSYM
