@@ -7,22 +7,17 @@ const char cryp[] = "wgsnqcdvmeyluzoabhrjfkxipt";
 
 char encryptF(void) {
     char line[LINE_LENGTH], input;
-    char *p, c, e;
+    char *p, c;
     int i;
 
     for(i = 0; i < 26; i++) {
         if(c == alph[i]) {
-            e = cryp[i];
+            p = cryp + i;
             break;
         }
     }
 
-    return e;
-    /*while(scanf("%c", &input) != EOF) {
-        if(scanf("%c", &input) == 1) {
-
-        }        
-    } */
+    return *p;
 }
 
 void decryptF(void) {
