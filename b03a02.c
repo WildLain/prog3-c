@@ -9,7 +9,7 @@ char encryptF(void) {
     char line[LINE_LENGTH], input;
     char *p, c;
     int i;
-
+    
     for(i = 0; i < 26; i++) {
         if(c == alph[i]) {
             p = cryp + i;
