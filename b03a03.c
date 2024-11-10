@@ -51,7 +51,7 @@ void soundex(const char s[], char res[]) {
         }
         if (z != 0) 
         {
-            if(j < 5) {
+            if((res[j-1] != z + '0') && j < 5) {
             res[j] = z + '0';
             j++;
             }
@@ -59,6 +59,14 @@ void soundex(const char s[], char res[]) {
             {
                 res[j] = z + '0';
             }
+        }
+    }
+
+    if(j < 5) 
+    {
+        for(;j <=5; j++)
+        {
+            res[j] = '0';
         }
     }
     res[6] = '\0';
