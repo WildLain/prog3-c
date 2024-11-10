@@ -74,7 +74,7 @@ void soundex(const char s[], char res[]) {
 }
 
 int main(void) {
-    char res[rlen] = {'0', '0', '0', '0', '0', '0'};
+    char res[rlen] = {'0'};
     char s[slen];
 
     while(scanf("%s", s) != EOF)  
