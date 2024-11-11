@@ -26,11 +26,16 @@ int main(void)
 
     while (scanf("%s", &input) != EOF)
     {
+        if(i > 0) 
+        {
+            
+        }
         i++;
         nextKitty = calloc(i, sizeof(Node));
         if (!nextKitty)
             return 1;
         strcpy(nextKitty->name, input);
+        
     };
 
     return 0;
