@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 enum
 {
@@ -10,78 +11,134 @@ struct nd
 {
     char name[STRLEN];
     struct nd *next;
-};
+} *newNode;
 
 typedef struct nd Node;
 
-Node* createNode(const char* name)
+Node *createNode(const char *name)
 {
     Node *newNode = malloc(sizeof(Node));
-    if(!newNode) return 1;
+    if (!newNode) return NULL;
 
-    strcpy(newNode->name, name);
+    strncpy(newNode->name, name, STRLEN);
     newNode->next = NULL;
     return newNode;
 }
 
-void addNode(Node **head, const char* name)
+Node *addNode(Node *head, const char *name)
 {
     Node *newNode = createNode(name);
-    if(*head == NULL) 
+
+    if (head == NULL)
     {
-        *head = newNode;
+        newNode->next = newNode;
+        return newNode;
     }
-    else
+
+    Node *current = head;
+    while (current->next != head)
     {
-        newNode->next = *head;
+        current = current->next;
     }
+
+    current->next = newNode;
+    newNode->next = head;
+
+    return head;
 }
 
-void removeNode(Node **head, Node *nodeToRemove)
+Node *findNode(Node *head, char name[STRLEN])
 {
-    
+    Node *current = head;
+
+    if (head == NULL)
+        return NULL;
+
+    do
+    {
+        if (strncmp(current->name, name, STRLEN) == 0)
+        {
+            return current;
+        }
+        current = current->next;
+    } while (current != head);
+
+    return NULL;
+}
+
+Node *removeNode(Node *head, char name[STRLEN])
+{
+    if (head == NULL)
+        return NULL;
+
+    Node *nodeToRemove = findNode(head, name);
+    if (nodeToRemove == NULL)
+        return head; /*Knoten nicht gefunden*/
+
+    if (head == nodeToRemove && head->next == head)
+    {
+        free(head);
+        return NULL;
+    }
+
+    Node *current = head;
+    do
+    {
+        if (current->next == nodeToRemove)
+        {
+            current->next = nodeToRemove->next;
+            if(head == nodeToRemove)
+            {
+                head = nodeToRemove->next;
+            }
+            free(nodeToRemove);
+            return head;
+        }
+        current = current->next;
+    } while (current->next != head);
+    current->next = current->next->next;
+    free(nodeToRemove);
+    return head;
 }
 
 void printRing(Node *head)
 {
+    if (head == NULL)
+    {
+        printf("Keiner da!\n");
+        return;
+    }
 
+    Node *current = head;
+    do
+    {
+        printf("%s\n", current->name);
+        current = current->next;
+    } while (current != head);
 }
 
 int main(void)
 {
-    Node *head = NULL;
-    char name[25];
+    Node *ring = NULL;
 
-    while(scanf("%s", &name) != EOF)
+    /*while(scanf("%s", &name) != EOF)
     {
-        addNode(&head, name);
-    }
+        head = addNode(head, name);
+    }*/
+
+    ring = addNode(ring, "Nhani");
+    // ring = addNode(ring, "Merle");
+    // ring = addNode(ring, "David");
+    // ring = addNode(ring, "Larissa");
+    // ring = addNode(ring, "Marvin");
+
+    printRing(ring);
+
+    /*Node *nodeToFind = findNode(ring, "Larissa");*/
+
+    ring = removeNode(ring, "Uli");
+
+    printRing(ring);
 
     return 0;
 }
-
-/*int main(void)
-{
-    int i = 0, j = 0;
-    char input[STRLEN];
-
-    scanf("%s", &input);
-    preKitty = malloc(sizeof(Node));
-    strcopy(preKitty->name, input);
-    preKitty->next = preKitty;
-    
-
-    while (scanf("%s", &input) != EOF)
-    {
-        Node *tmp;
-        nextKitty = malloc(sizeof(Node));
-        if (!nextKitty)
-            return 1;
-        strcpy(nextKitty->name, input);
-        tmp = preKitty->next;
-        preKitty->next = nextKitty;
-        nextKitty->next = tmp;        
-    };
-
-    return 0;
-}*/
