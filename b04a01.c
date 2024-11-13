@@ -28,14 +28,14 @@ Node *createNode(const char *name)
 Node *addNode(Node *head, const char *name)
 {
     Node *newNode = createNode(name);
+    Node *current;
 
     if (head == NULL)
     {
         newNode->next = newNode;
         return newNode;
     }
-
-    Node *current = head;
+    current = head;
     while (current->next != head)
     {
         current = current->next;
@@ -68,10 +68,11 @@ Node *findNode(Node *head, char name[STRLEN])
 
 Node *removeNode(Node *head, char name[STRLEN])
 {
+    Node *nodeToRemove, *current;
     if (head == NULL)
         return NULL;
 
-    Node *nodeToRemove = findNode(head, name);
+    nodeToRemove = findNode(head, name);
     if (nodeToRemove == NULL)
         return head; /*Knoten nicht gefunden*/
 
@@ -81,7 +82,7 @@ Node *removeNode(Node *head, char name[STRLEN])
         return NULL;
     }
 
-    Node *current = head;
+    current = head;
     do
     {
         if (current->next == nodeToRemove)
@@ -103,18 +104,20 @@ Node *removeNode(Node *head, char name[STRLEN])
 
 void printRing(Node *head)
 {
+    Node *current;
     if (head == NULL)
     {
         printf("Keiner da!\n");
         return;
     }
 
-    Node *current = head;
+    current = head;
     do
     {
         printf("%s\n", current->name);
         current = current->next;
     } while (current != head);
+    printf("\n");
 }
 
 int main(void)
@@ -127,16 +130,16 @@ int main(void)
     }*/
 
     ring = addNode(ring, "Nhani");
-    // ring = addNode(ring, "Merle");
-    // ring = addNode(ring, "David");
-    // ring = addNode(ring, "Larissa");
-    // ring = addNode(ring, "Marvin");
+    ring = addNode(ring, "Merle");
+    ring = addNode(ring, "David");
+    ring = addNode(ring, "Larissa");
+    ring = addNode(ring, "Marvin");
 
     printRing(ring);
 
     /*Node *nodeToFind = findNode(ring, "Larissa");*/
 
-    ring = removeNode(ring, "Uli");
+    ring = removeNode(ring, "Larissa");
 
     printRing(ring);
 
