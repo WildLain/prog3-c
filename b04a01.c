@@ -66,7 +66,7 @@ Node *findNode(Node *head, char name[STRLEN])
     return NULL;
 }
 
-Node *removeNode(Node *head, char name[STRLEN])
+Node *removeNode(Node *head, char *name)
 {
     Node *nodeToRemove, *current;
     if (head == NULL)
