@@ -18,7 +18,8 @@ typedef struct nd Node;
 Node *createNode(const char *name)
 {
     Node *newNode = malloc(sizeof(Node));
-    if (!newNode) return NULL;
+    if (!newNode)
+        return NULL;
 
     strncpy(newNode->name, name, STRLEN);
     newNode->next = NULL;
@@ -66,13 +67,15 @@ Node *findNode(Node *head, char name[STRLEN])
     return NULL;
 }
 
-Node *removeNode(Node *head, char *name)
+/*Node *removeNode(Node *head, char *name)*/
+Node *removeNode(Node *head, Node *nodeToRemove)
 {
-    Node *nodeToRemove, *current;
+    /*Node *nodeToRemove, *current;*/
+    Node *current;
     if (head == NULL)
         return NULL;
 
-    nodeToRemove = findNode(head, name);
+    /*nodeToRemove = findNode(head, name);*/
     if (nodeToRemove == NULL)
         return head; /*Knoten nicht gefunden*/
 
@@ -88,7 +91,7 @@ Node *removeNode(Node *head, char *name)
         if (current->next == nodeToRemove)
         {
             current->next = nodeToRemove->next;
-            if(head == nodeToRemove)
+            if (head == nodeToRemove)
             {
                 head = nodeToRemove->next;
             }
@@ -99,6 +102,23 @@ Node *removeNode(Node *head, char *name)
     } while (current->next != head);
     current->next = current->next->next;
     free(nodeToRemove);
+    return head;
+}
+
+Node *countOut(Node *head, int argc)
+{
+    int i = 0;
+    Node *current = head;
+    while (head->next != head)
+    {
+        while(i < argc)
+        {
+            current = current->next;
+            i++;
+        }
+        printf("Ausgezählt und Glück gehabt: %s\n", current->name);
+        head = removeNode(head, current);
+    }
     return head;
 }
 
@@ -120,13 +140,13 @@ void printRing(Node *head)
     printf("\n");
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
     Node *ring = NULL;
 
     /*while(scanf("%s", &name) != EOF)
     {
-        head = addNode(head, name);
+        ring = addNode(head, name);
     }*/
 
     ring = addNode(ring, "Nhani");
@@ -141,7 +161,8 @@ int main(void)
 
     printRing(ring);*/
 
-    
+    ring = countOut(ring, 8);
+    printRing(ring);
 
     return 0;
 }
