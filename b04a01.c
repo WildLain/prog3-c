@@ -14,6 +14,7 @@ struct nd
 } *newNode;
 
 typedef struct nd Node;
+void printRing(Node *head);
 
 Node *createNode(const char *name)
 {
@@ -48,78 +49,32 @@ Node *addNode(Node *head, const char *name)
     return head;
 }
 
-Node *findNode(Node *head, char name[STRLEN])
+void countOut(Node *head, int argc)
 {
-    Node *current = head;
-
-    if (head == NULL)
-        return NULL;
-
-    do
-    {
-        if (strncmp(current->name, name, STRLEN) == 0)
-        {
-            return current;
-        }
-        current = current->next;
-    } while (current != head);
-
-    return NULL;
-}
-
-/*Node *removeNode(Node *head, char *name)*/
-Node *removeNode(Node *head, Node *nodeToRemove)
-{
-    /*Node *nodeToRemove, *current;*/
+    int i;
     Node *current;
-    if (head == NULL)
-        return NULL;
-
-    /*nodeToRemove = findNode(head, name);*/
-    if (nodeToRemove == NULL)
-        return head; /*Knoten nicht gefunden*/
-
-    if (head == nodeToRemove && head->next == head)
-    {
-        free(head);
-        return NULL; /*Knoten letzter Knoten*/
-    }
-
-    current = head;
-    do
-    {
-        if (current->next == nodeToRemove)
-        {
-            current->next = nodeToRemove->next;
-            if (head == nodeToRemove)
-            {
-                head = nodeToRemove->next;
-            }
-            free(nodeToRemove);
-            return head;
-        }
-        current = current->next;
-    } while (current->next != head);
-    current->next = current->next->next;
-    free(nodeToRemove);
-    return head;
-}
-
-Node *countOut(Node *head, int argc)
-{
-    int i = 0;
-    Node *current = head;
     while (head->next != head)
     {
-        while(i < argc)
+        current = head;
+        for(i = 0; i < argc-1; i++)
         {
             current = current->next;
-            i++;
         }
-        printf("Ausgezählt und Glück gehabt: %s\n", current->name);
-        head = removeNode(head, current);
+        if(current->next == head && current == head)
+        {
+            printf("Muss spülen: %s\n", head->name);
+            free(head);
+        }
+        printf("Muss nicht: %s\n", current->next->name);
+        if(current->next == head)
+        {
+            head = current->next->next;
+        }
+        free(current->next);
+        current->next = current->next->next;
+        printRing(head);
+        continue;
     }
-    return head;
 }
 
 void printRing(Node *head)
@@ -143,26 +98,21 @@ void printRing(Node *head)
 int main(int argc, char *argv[])
 {
     Node *ring = NULL;
+    char name[STRLEN];
 
-    /*while(scanf("%s", &name) != EOF)
+    while(scanf("%s", name) != EOF)
     {
-        ring = addNode(head, name);
-    }*/
+        ring = addNode(ring, name);
+    }
+    printf("\n");
 
-    ring = addNode(ring, "Nhani");
-    ring = addNode(ring, "Merle");
-    ring = addNode(ring, "David");
-    ring = addNode(ring, "Larissa");
-    ring = addNode(ring, "Marvin");
-
-    printRing(ring);
-
-    /*ring = removeNode(ring, "Larissa");
-
-    printRing(ring);*/
-
-    ring = countOut(ring, 8);
-    printRing(ring);
+    countOut(ring, argc);   
 
     return 0;
 }
+
+    /*ring = addNode(ring, "Nhani");
+    ring = addNode(ring, "Merle");
+    ring = addNode(ring, "David");
+    ring = addNode(ring, "Larissa");
+    ring = addNode(ring, "Marvin");*/
