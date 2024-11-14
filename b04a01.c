@@ -79,7 +79,7 @@ Node *removeNode(Node *head, char *name)
     if (head == nodeToRemove && head->next == head)
     {
         free(head);
-        return NULL;
+        return NULL; /*Knoten letzter Knoten*/
     }
 
     current = head;
@@ -137,11 +137,11 @@ int main(void)
 
     printRing(ring);
 
-    /*Node *nodeToFind = findNode(ring, "Larissa");*/
+    /*ring = removeNode(ring, "Larissa");
 
-    ring = removeNode(ring, "Larissa");
+    printRing(ring);*/
 
-    printRing(ring);
+    
 
     return 0;
 }
