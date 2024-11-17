@@ -10,7 +10,6 @@ enum
 struct listnode
 {
     char inhalt[STRLEN];
-    int pos;
     struct listnode *prev;
     struct listnode *next;
 };
@@ -21,7 +20,7 @@ void printList(nodep *lst)
     printf("\n");
     while (lst != NULL)
     {
-        printf("%d\t%p\t%s\n",lst->pos, &lst, lst->inhalt);
+        printf("%p\t%s\n", &lst, lst->inhalt);
         lst = lst->next;
     }
     printf("\n");
@@ -29,54 +28,40 @@ void printList(nodep *lst)
 
 nodep *insertAt(nodep *lst, int pos, char *inhalt)
 {
-    nodep *current = lst;
-    nodep *newNode = NULL;
     int i;
+    nodep *current = lst;
+    nodep *newNode = malloc(sizeof(nodep));
+    strncpy(newNode->inhalt, inhalt, STRLEN);
+
     if (lst == NULL)
     {
-        lst = malloc(sizeof(nodep));
-        strncpy(lst->inhalt, inhalt, STRLEN);
-        lst->pos = 0;
+        lst = newNode;
         lst->prev = NULL;
         lst->next = NULL;
+        return lst;
     }
-    /*else if (lst->pos - pos < 0)
+    else if (pos == -1)
     {
+        current = lst;
         while (current->next != NULL)
         {
             current = current->next;
         }
-        newNode = malloc(sizeof(nodep));
-        strncpy(newNode->inhalt, inhalt, STRLEN);
         current->next = newNode;
         newNode->prev = current;
-        newNode->next = NULL;
-    }*/
+        return lst;
+    }
     else
     {
-        newNode = malloc(sizeof(nodep));
-        strncpy(newNode->inhalt, inhalt, STRLEN);
 
-        if(pos < 0)
+        for (i = pos; i > 1; i--)
         {
-            current = lst;
-            while(current->next != NULL)
-            {
-                current = current->next;
-            }
-            current->next = newNode;
-            newNode->prev = current;
-            newNode->pos = current->pos + 1;
-            return lst;
-        }
-        for(i = pos; i > 0; i--)
-        {
-            if(current->next == NULL)
-            break;
+            if (current->next == NULL)
+                break;
 
             current = current->next;
         }
-        if(current->next == NULL)
+        if (current->next == NULL)
         {
             newNode->next = NULL;
         }
@@ -86,13 +71,8 @@ nodep *insertAt(nodep *lst, int pos, char *inhalt)
         }
         current->next = newNode;
         newNode->prev = current;
-        newNode->pos = pos;
+        current->next->prev = newNode;
         current = newNode;
-        while (current->next != NULL)
-        {
-            current = current->next;
-            current->pos++;
-        }
     }
     return lst;
 }
@@ -101,12 +81,15 @@ int main(void)
 {
     nodep *lst = NULL;
 
-    lst = insertAt(lst, 0,  "Hose");
-    lst = insertAt(lst, 1,  "Jacke");
-    lst = insertAt(lst, 2,  "T-Shirt");
-    lst = insertAt(lst, 3,  "Muetze");
+    lst = insertAt(lst, 0, "Hose");
+    lst = insertAt(lst, 1, "Jacke");
     lst = insertAt(lst, -1, "Sonnenbrille");
-    lst = insertAt(lst, 2,  "Handschuhe");
+    lst = insertAt(lst, 2, "T-Shirt");
+    lst = insertAt(lst, 3, "Muetze");
+    lst = insertAt(lst, 0, "Pullover");
+    lst = insertAt(lst, -1, "Schal");
+    lst = insertAt(lst, 2, "Handschuhe");
+
 
     printList(lst);
     return 0;
