@@ -20,7 +20,7 @@ void printList(nodep *lst)
     printf("\n");
     while (lst != NULL)
     {
-        printf("%p\t%s\n", lst, lst->inhalt);
+        printf("%p\t%s\n", (void *)lst, lst->inhalt);
         lst = lst->next;
     }
     printf("\n");
@@ -40,7 +40,7 @@ nodep *insertAt(nodep *lst, int pos, char *inhalt)
         lst->next = NULL;
         return lst;
     }
-    else if(pos == 0)
+    else if (pos == 0)
     {
         current->prev = newNode;
         newNode->next = current;
@@ -84,19 +84,63 @@ nodep *deleteAt(nodep *lst, int pos)
 {
     nodep *current = lst;
     int i;
-    for(i = 0; i < pos; i++)
+    for (i = 0; i < pos; i++)
     {
         current = current->next;
     }
-
-    printf("Zu löschen:\t%s\n", current->inhalt);
-    printf("Vorgänger: \t%s\n", current->prev->inhalt);
-    current->prev->next = current->next;
-    current->next->prev = current->prev;
-
+    if (current->prev == NULL)
+    {
+        if (current->next != NULL)
+        {
+            current->next->prev = NULL;
+        }
+        lst = current->next;
+    }
+    else if (current->next == NULL)
+    {
+        current->prev->next = NULL;
+    }
+    else
+    {
+        printf("Vorgänger: \t%s\n", current->prev->inhalt);
+        current->prev->next = current->next;
+        current->next->prev = current->prev;
+    }
+    printf("Wird gelöscht:\t%s\n", current->inhalt);
     free(current);
-
+    printList(lst);
     return lst;
+}
+
+nodep *copyList(nodep *lst)
+{
+    nodep *cpyFrm = lst;
+    nodep *newList = NULL;
+    nodep *tail = NULL;
+    nodep *tmp = NULL;
+    do
+    {
+        newNode = malloc(sizeof(nodep));
+        if (newList == NULL)
+        {
+            tail->prev = NULL;
+            tail->inhalt = cpyFrm->inhalt;
+            tail->next = cpyFrm->next;
+
+            newList = tail;
+            cpyFrm = cpyFrm->next;
+        }
+        else
+        {
+            tmp = malloc(sizeof(nodep));
+            tmp->prev = newNode;
+            tmp->inhalt = *cpyFrm->inhalt;
+            tmp->next = cpyFrm->next;
+            cpyFrm = cpyFrm->next;
+            newNode = tmp;
+        }
+    } while (cpyFrm->next != NULL);
+    return newList;
 }
 
 int main(void)
@@ -115,7 +159,11 @@ int main(void)
     printList(lst);
 
     lst = deleteAt(lst, 2);
+    lst = deleteAt(lst, 0);
+    lst = deleteAt(lst, 1);
+    lst = deleteAt(lst, 0);
 
+    lst = copyList(lst);
     printList(lst);
     return 0;
 }
