@@ -30,7 +30,7 @@ Node *createNode(const char *name)
 Node *addNode(Node *head, const char *name)
 {
     Node *newNode = createNode(name);
-    Node *current;
+    Node *current = NULL;
 
     if (head == NULL)
     {
@@ -49,7 +49,7 @@ Node *addNode(Node *head, const char *name)
     return head;
 }
 
-void countOut(Node *head, int argc)
+Node* countOut(Node *head, int argc)
 {
     int i;
     Node *current;
@@ -60,12 +60,7 @@ void countOut(Node *head, int argc)
         {
             current = current->next;
         }
-        if(current->next == head && current == head)
-        {
-            printf("Muss spülen: %s\n", head->name);
-            free(head);
-        }
-        printf("Muss nicht: %s\n", current->next->name);
+        printf("Muss nicht:\t %s\n", current->next->name);
         if(current->next == head)
         {
             head = current->next->next;
@@ -75,11 +70,15 @@ void countOut(Node *head, int argc)
         printRing(head);
         continue;
     }
+    printf("Muss spülen:\t %s\n", head->name);
+    return head;
 }
 
 void printRing(Node *head)
 {
-    Node *current;
+    Node *current = NULL;
+
+    printf("\n");
     if (head == NULL)
     {
         printf("Keiner da!\n");
@@ -98,21 +97,25 @@ void printRing(Node *head)
 int main(int argc, char *argv[])
 {
     Node *ring = NULL;
-    char name[STRLEN];
+    /*char name[STRLEN];*/
 
-    while(scanf("%s", name) != EOF)
+    /*while(scanf("%s", name) != EOF)
     {
         ring = addNode(ring, name);
-    }
-    printf("\n");
+    }*/
 
-    countOut(ring, argc);   
-
-    return 0;
-}
-
-    /*ring = addNode(ring, "Nhani");
+    argc = 3;
+    ring = addNode(ring, "Nhani");
     ring = addNode(ring, "Merle");
     ring = addNode(ring, "David");
     ring = addNode(ring, "Larissa");
-    ring = addNode(ring, "Marvin");*/
+    ring = addNode(ring, "Marvin");
+
+
+    printf("\n");
+
+    ring = countOut(ring, argc);
+    free(ring);   
+
+    return 0;
+}
