@@ -20,7 +20,7 @@ void printList(nodep *lst)
     printf("\n");
     while (lst != NULL)
     {
-        printf("%p\t%s\n", &lst, lst->inhalt);
+        printf("%p\t%s\n", lst, lst->inhalt);
         lst = lst->next;
     }
     printf("\n");
@@ -40,6 +40,13 @@ nodep *insertAt(nodep *lst, int pos, char *inhalt)
         lst->next = NULL;
         return lst;
     }
+    else if(pos == 0)
+    {
+        current->prev = newNode;
+        newNode->next = current;
+        newNode->prev = NULL;
+        return newNode;
+    }
     else if (pos == -1)
     {
         current = lst;
@@ -54,26 +61,41 @@ nodep *insertAt(nodep *lst, int pos, char *inhalt)
     else
     {
 
-        for (i = pos; i > 1; i--)
+        for (i = 1; i < pos; i++)
         {
             if (current->next == NULL)
+            {
+                newNode->next = NULL;
                 break;
-
+            }
             current = current->next;
         }
-        if (current->next == NULL)
-        {
-            newNode->next = NULL;
-        }
-        else
+        if (current->next != NULL)
         {
             newNode->next = current->next;
         }
-        current->next = newNode;
         newNode->prev = current;
-        current->next->prev = newNode;
-        current = newNode;
+        current->next = newNode;
     }
+    return lst;
+}
+
+nodep *deleteAt(nodep *lst, int pos)
+{
+    nodep *current = lst;
+    int i;
+    for(i = 0; i < pos; i++)
+    {
+        current = current->next;
+    }
+
+    printf("Zu löschen:\t%s\n", current->inhalt);
+    printf("Vorgänger: \t%s\n", current->prev->inhalt);
+    current->prev->next = current->next;
+    current->next->prev = current->prev;
+
+    free(current);
+
     return lst;
 }
 
@@ -83,13 +105,16 @@ int main(void)
 
     lst = insertAt(lst, 0, "Hose");
     lst = insertAt(lst, 1, "Jacke");
-    lst = insertAt(lst, -1, "Sonnenbrille");
     lst = insertAt(lst, 2, "T-Shirt");
     lst = insertAt(lst, 3, "Muetze");
-    lst = insertAt(lst, 0, "Pullover");
+    /*lst = insertAt(lst, 0, "Pullover");
     lst = insertAt(lst, -1, "Schal");
-    lst = insertAt(lst, 2, "Handschuhe");
+    lst = insertAt(lst, -1, "Sonnenbrille");
+    lst = insertAt(lst, 2, "Handschuhe");*/
 
+    printList(lst);
+
+    lst = deleteAt(lst, 2);
 
     printList(lst);
     return 0;
