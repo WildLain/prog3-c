@@ -38,11 +38,13 @@ nodep *insertAt(nodep *lst, int pos, char *inhalt)
     if (!newNode)
         return NULL;
 
-    newNode->inhalt = malloc(sizeof(strlen(inhalt) + 1));
+    newNode->inhalt = malloc(strlen(inhalt) + 1);
     if (!newNode->inhalt)
         return NULL;
 
-    strncpy(newNode->inhalt, inhalt, sizeof(strlen(inhalt) + 1));
+    newNode->next = NULL;
+
+    strcpy(newNode->inhalt, inhalt);
 
     if (lst == NULL)
     {
@@ -98,27 +100,35 @@ nodep *deleteAt(nodep *lst, int pos)
     {
         current = current->next;
     }
-    if (current->prev == NULL)
+    if (current == NULL)
     {
-        if (current->next != NULL)
-        {
-            current->next->prev = NULL;
-        }
-        lst = current->next;
-    }
-    else if (current->next == NULL)
-    {
-        current->prev->next = NULL;
+        return lst;
     }
     else
     {
-        current->prev->next = current->next;
-        current->next->prev = current->prev;
+        if (current->prev == NULL)
+        {
+            if (current->next != NULL)
+            {
+                current->next->prev = NULL;
+            }
+            lst = current->next;
+        }
+        else if (current->next == NULL)
+        {
+            current->prev->next = NULL;
+        }
+        else
+        {
+            current->prev->next = current->next;
+            current->next->prev = current->prev;
+        }
+        if (current->prev != NULL)
+        {
+            printf("Vorgänger: \t%s\n", current->prev->inhalt);
+        }
     }
-    if (current->prev != NULL)
-    {
-        printf("Vorgänger: \t%s\n", current->prev->inhalt);
-    }
+
     printf("Wird gelöscht:\t%s\n", current->inhalt);
     free(current->inhalt);
     free(current);
@@ -130,21 +140,19 @@ nodep *copyList(nodep *lst)
 {
     nodep *newList = NULL;
     nodep *current = lst;
-    newList = insertAt(newList, 0, lst->inhalt);
-
-    do
+    while (current->next != NULL)
     {
         newList = insertAt(newList, -1, current->inhalt);
         current = current->next;
-    } while (current->next != NULL);
+    };
     return newList;
 }
 
 void deleteList(nodep *lst)
 {
     nodep *current = lst;
-    
-    while(current != NULL)
+
+    while (current != NULL)
     {
         deleteAt(current, 0);
         current = current->next;
@@ -160,23 +168,26 @@ int main(void)
     lst = insertAt(lst, 1, "Jacke");
     lst = insertAt(lst, 2, "T-Shirt");
     lst = insertAt(lst, 3, "Muetze");
+
     /*lst = insertAt(lst, 0, "Pullover");
     lst = insertAt(lst, -1, "Schal");
     lst = insertAt(lst, -1, "Sonnenbrille");
     lst = insertAt(lst, 2, "Handschuhe");*/
 
-    printList(lst);
-
-    lst = deleteAt(lst, 2);
+    /*lst = deleteAt(lst, 2);
     lst = deleteAt(lst, 0);
     lst = deleteAt(lst, 1);
     lst = deleteAt(lst, 0);
-    free(lst);
+    free(lst);*/
 
-    /*printf("Kopie: \n");
+    printList(lst);
+
+    printf("Kopie: \n");
     lstToCpy = copyList(lst);
-    printList(lstToCpy);
+    deleteList(lstToCpy);
 
-    deleteList(lstToCpy);*/
+    /*deleteList(lstToCpy);*/
+
+    deleteList(lst);
     return 0;
 }
