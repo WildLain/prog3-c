@@ -120,6 +120,7 @@ nodep *deleteAt(nodep *lst, int pos)
         printf("Vorgänger: \t%s\n", current->prev->inhalt);
     }
     printf("Wird gelöscht:\t%s\n", current->inhalt);
+    free(current->inhalt);
     free(current);
     printList(lst);
     return lst;
@@ -166,15 +167,16 @@ int main(void)
 
     printList(lst);
 
-    /*lst = deleteAt(lst, 2);
+    lst = deleteAt(lst, 2);
     lst = deleteAt(lst, 0);
     lst = deleteAt(lst, 1);
-    lst = deleteAt(lst, 0);*/
-    
-    printf("Kopie: \n");
+    lst = deleteAt(lst, 0);
+    free(lst);
+
+    /*printf("Kopie: \n");
     lstToCpy = copyList(lst);
     printList(lstToCpy);
 
-    deleteList(lstToCpy);
+    deleteList(lstToCpy);*/
     return 0;
 }
