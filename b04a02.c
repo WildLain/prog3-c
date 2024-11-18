@@ -9,7 +9,7 @@ enum
 
 struct listnode
 {
-    char inhalt[STRLEN];
+    char *inhalt;
     struct listnode *prev;
     struct listnode *next;
 };
@@ -17,6 +17,10 @@ typedef struct listnode nodep;
 
 void printList(nodep *lst)
 {
+    if (lst == NULL)
+    {
+        printf("Liste leer!");
+    }
     printf("\n");
     while (lst != NULL)
     {
@@ -31,7 +35,14 @@ nodep *insertAt(nodep *lst, int pos, char *inhalt)
     int i;
     nodep *current = lst;
     nodep *newNode = malloc(sizeof(nodep));
-    strncpy(newNode->inhalt, inhalt, STRLEN);
+    if (!newNode)
+        return NULL;
+
+    newNode->inhalt = malloc(sizeof(strlen(inhalt) + 1));
+    if (!newNode->inhalt)
+        return NULL;
+
+    strncpy(newNode->inhalt, inhalt, sizeof(strlen(inhalt) + 1));
 
     if (lst == NULL)
     {
@@ -40,15 +51,16 @@ nodep *insertAt(nodep *lst, int pos, char *inhalt)
         lst->next = NULL;
         return lst;
     }
-    else if (pos == 0)
+
+    switch (pos)
     {
+    case 0:
         current->prev = newNode;
         newNode->next = current;
         newNode->prev = NULL;
-        return newNode;
-    }
-    else if (pos == -1)
-    {
+        lst = newNode;
+        break;
+    case -1:
         current = lst;
         while (current->next != NULL)
         {
@@ -56,11 +68,8 @@ nodep *insertAt(nodep *lst, int pos, char *inhalt)
         }
         current->next = newNode;
         newNode->prev = current;
-        return lst;
-    }
-    else
-    {
-
+        break;
+    default:
         for (i = 1; i < pos; i++)
         {
             if (current->next == NULL)
@@ -76,6 +85,7 @@ nodep *insertAt(nodep *lst, int pos, char *inhalt)
         }
         newNode->prev = current;
         current->next = newNode;
+        break;
     }
     return lst;
 }
@@ -102,9 +112,12 @@ nodep *deleteAt(nodep *lst, int pos)
     }
     else
     {
-        printf("Vorgänger: \t%s\n", current->prev->inhalt);
         current->prev->next = current->next;
         current->next->prev = current->prev;
+    }
+    if (current->prev != NULL)
+    {
+        printf("Vorgänger: \t%s\n", current->prev->inhalt);
     }
     printf("Wird gelöscht:\t%s\n", current->inhalt);
     free(current);
@@ -114,38 +127,33 @@ nodep *deleteAt(nodep *lst, int pos)
 
 nodep *copyList(nodep *lst)
 {
-    nodep *cpyFrm = lst;
     nodep *newList = NULL;
-    nodep *tail = NULL;
-    nodep *tmp = NULL;
+    nodep *current = lst;
+    newList = insertAt(newList, 0, lst->inhalt);
+
     do
     {
-        newNode = malloc(sizeof(nodep));
-        if (newList == NULL)
-        {
-            tail->prev = NULL;
-            tail->inhalt = cpyFrm->inhalt;
-            tail->next = cpyFrm->next;
-
-            newList = tail;
-            cpyFrm = cpyFrm->next;
-        }
-        else
-        {
-            tmp = malloc(sizeof(nodep));
-            tmp->prev = newNode;
-            tmp->inhalt = *cpyFrm->inhalt;
-            tmp->next = cpyFrm->next;
-            cpyFrm = cpyFrm->next;
-            newNode = tmp;
-        }
-    } while (cpyFrm->next != NULL);
+        newList = insertAt(newList, -1, current->inhalt);
+        current = current->next;
+    } while (current->next != NULL);
     return newList;
+}
+
+void deleteList(nodep *lst)
+{
+    nodep *current = lst;
+    
+    while(current != NULL)
+    {
+        deleteAt(current, 0);
+        current = current->next;
+    }
 }
 
 int main(void)
 {
     nodep *lst = NULL;
+    nodep *lstToCpy = NULL;
 
     lst = insertAt(lst, 0, "Hose");
     lst = insertAt(lst, 1, "Jacke");
@@ -158,12 +166,15 @@ int main(void)
 
     printList(lst);
 
-    lst = deleteAt(lst, 2);
+    /*lst = deleteAt(lst, 2);
     lst = deleteAt(lst, 0);
     lst = deleteAt(lst, 1);
-    lst = deleteAt(lst, 0);
+    lst = deleteAt(lst, 0);*/
+    
+    printf("Kopie: \n");
+    lstToCpy = copyList(lst);
+    printList(lstToCpy);
 
-    lst = copyList(lst);
-    printList(lst);
+    deleteList(lstToCpy);
     return 0;
 }
