@@ -16,21 +16,14 @@ void replace(char *line, char *word)
             {
                 char c1 = p[i];
                 char c2 = p2[i];
-                if(c1 == c2)
-                {
-                    continue;
-                }
-                else
-                {
-                    break;
-                }
+                if(c1 == c2)    continue;
+                else            break;
             }
-            if(i == strlen(word))
+             if(i == strlen(word))
             {
-                for(i = 1; i < strlen(word); i++)
-                {
-                    p[i] = '*';
-                }
+                for(i = 1; i < strlen(word); i++)                
+                    {p[i] = '*';}
+                
             }   
         }
         p++;
@@ -44,7 +37,7 @@ int main(int argc, char const *argv[])
     int i;
     while (fgets(input, MAXLEN, stdin) != NULL)
     {
-        size_t len = strlen(input);
+        int len = strlen(input);
         if (input[len - 1] == '\n')
         {
             input[len - 1] = '\0';
@@ -53,16 +46,8 @@ int main(int argc, char const *argv[])
                 strcpy(word, argv[i]);
                 replace(input, word);
             }
-            printf("\n%s\n", input);
-            printf("\n");
+            printf("%s\n", input);
         }
     }
-    
-    /*char input[] = "Liebe Tante, unser Elend unter Glogomir ist unbeschreibbar.\n";
-    char word[] = "Elend";
-
-    replace(input, word);
-    printf("%s", input);*/
-
     return 0;
 }
