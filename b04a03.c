@@ -11,11 +11,9 @@ char *replace(char *line, char *word)
     {
         for (i = 1; i < strlen(word); i++)
         {
-            printf("%s", p);
             p[i] = '*';
         }
     }
-    printf("%s", line);
     return line;
 }
 
@@ -32,14 +30,16 @@ int main(int argc, char const *argv[])
     while (fgets(input, MAXLEN, stdin) != NULL)
     {
         size_t len = strlen(input);
-        if(input[len-1] == '\n')
+        if (input[len - 1] == '\n')
         {
-            input[len-1] = '\0';
-        }
-        for (i = 1; i < argc; i++)
-        {
-            strcpy(word, argv[i]);
-            strcpy(input, replace(input, word));
+            /*input[len - 1] = '\0';*/
+            for (i = 1; i < argc; i++)
+            {
+                strcpy(word, argv[i]);
+                strcpy(input, replace(input, word));
+            }
+            printf("\n%s\n", input);
+            printf("\n");
         }
     }
     return 0;
