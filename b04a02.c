@@ -2,11 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-enum
-{
-    STRLEN = 25
-};
-
 struct listnode
 {
     char *inhalt;

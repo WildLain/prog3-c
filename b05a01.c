@@ -1,22 +1,35 @@
 #include <stdio.h>
-
-enum { MAXLEN = 80}
+#include <string.h>
 
 union num {
-    double a;
-    unsigned int b,c;
-} kitty;
+    double d;
+    unsigned int ui[2];
+} value;
 
-
-int main(void)
+void printBinary(unsigned int z)
 {
-    char line[MAXLEN];
-    while(fgets(line, MAXLEN, stdin))
+    int i;
+    for(i = 31; i >= 0; i--)
     {
-        kitty = malloc(sizeof(union num));
-        if(sscanf(line, "%lf", &kitty)== 1) {break;}
-        printf("Fehler beim lesen. Bitte nochmal versuchen: ");
+        printf("%d", (z >> i) & 1);
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    double input;
+    /*char cinput[] = "3.5717178E-12";
+    printf("Zahl:\t%s\n", cinput);*/
+
+    if(sscanf(argv[1], "%lf", &input) == 0) {
+        printf("Einlesen nicht geklappt.");
+        return 1;
     }
 
+    value.d = input;
+
+    printBinary(value.ui[1]);
+    printBinary(value.ui[0]);
+    printf("\n");
     return 0;
 }
