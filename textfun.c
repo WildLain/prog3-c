@@ -28,29 +28,64 @@ void clearList(void)
     wordList = NULL;
 }
 
-Fundstelle find(const char *s)
+Fundstelle *find(const char *s)
 {
+    Fundstelle *newF = NULL;
     ListEle *current = wordList;
-    char *p1 = s;
-    char *p2 = current->suchWort;
-    while (isalpha(*p1))
+    char *p1 = s, *p2;
+    int i;
+    while(current)
     {
-        if(*p1 == *p2)
+        char *p2 = current->suchWort;
+        int len = strlen(p2);
+        while(*p1 != '\0')
         {
-            int i;
-            for(i = 1; i < strlen(current->suchWort); i++)
+            if(*p1 == *p2)
             {
-                if(p1[i] == p2[i])  continue;
-                else                break;
+                for(i = 1; i < len; i++)
+                {
+                    char c1 = p1[i];
+                    char c2 = p2[i];
+                    if(c1 == c2)    continue;
+                    else            break;
+                }
+                if(i == len)
+                {
+                    newF = malloc(sizeof(Fundstelle));
+                    newF->stelleImSuchstring = p1;
+                    strcpy(newF->ersetzung, current->ersetzungsWort);
+                    return newF;
+                }
             }
-            if(i == strlen(current->suchWort))
-            {
-                Fundstelle stelle;
-                stelle.stelleImSuchstring = p1;
-                stelle.ersetzung = current->suchWort;
-            }
+            p1++;
         }
-    }
+        current = current->next;
+    }    
+    return newF;
+}
+
+int replaceAll(char *s)
+{
+    Fundstelle *gefunden = NULL;
+    int i;
+    char *pStart = s, *pEnde;
+    char *subStr, res[200];
+    do
+    {
+        gefunden = find(s);
+        if(gefunden)
+        {
+            int lenB4 = gefunden->stelleImSuchstring - pStart;
+            int wordLen = strlen(gefunden->ersetzung);
+
+            strncpy(res, s, lenB4);
+            res[lenB4] = '\0';
+
+            strcat(res, gefunden->ersetzung);
+
+            strcat(res, gefunden->stelleImSuchstring + wordLen);
+        }
+    } while (gefunden);
 }
 
 int main(int argc, char const *argv[])
