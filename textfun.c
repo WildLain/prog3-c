@@ -1,95 +1,93 @@
-#include "textfun.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
+#include <assert.h>
+
+#define MAX_WORD_LEN 25
+
+typedef struct listEle {
+    char suchWort[MAX_WORD_LEN];
+    char ersetzungsWort[MAX_WORD_LEN];
+    struct listEle *next;
+} ListEle;
+
+typedef struct {
+    const char *stelleImSuchstring;
+    ListEle *ersetzung;
+} Fundstelle;
 
 ListEle *wordList = NULL;
 
-void addPair(const char *such, const char *ersatz)
-{
+void addPair(const char *such, const char *ersatz) {
     ListEle *newEle = malloc(sizeof(ListEle));
     assert(newEle);
-    strncpy(newEle->suchWort, such, MAX_WORD_LEN);
-    strncpy(newEle->ersetzungsWort, ersatz, MAX_WORD_LEN);
+    strncpy(newEle->suchWort, such, MAX_WORD_LEN - 1);
+    newEle->suchWort[MAX_WORD_LEN - 1] = '\0';
+    strncpy(newEle->ersetzungsWort, ersatz, MAX_WORD_LEN - 1);
+    newEle->ersetzungsWort[MAX_WORD_LEN - 1] = '\0';
     newEle->next = wordList;
     wordList = newEle;
 }
 
-void clearList(void)
-{
+void clearList(void) {
     ListEle *current = wordList;
-    while (current)
-    {
+    while (current) {
         ListEle *temp = current;
         current = current->next;
-        free(current);
+        free(temp);
     }
     wordList = NULL;
 }
 
-Fundstelle *find(const char *s)
-{
+Fundstelle *find(const char *s) {
     Fundstelle *newF = NULL;
     ListEle *current = wordList;
-    char *p1 = s, *p2;
-    int i;
-    while(current)
-    {
-        char *p2 = current->suchWort;
+    while (current) {
+        const char *p1 = s;
+        const char *p2 = current->suchWort;
         int len = strlen(p2);
-        while(*p1 != '\0')
-        {
-            if(*p1 == *p2)
-            {
-                for(i = 1; i < len; i++)
-                {
-                    char c1 = p1[i];
-                    char c2 = p2[i];
-                    if(c1 == c2)    continue;
-                    else            break;
-                }
-                if(i == len)
-                {
-                    newF = malloc(sizeof(Fundstelle));
-                    newF->stelleImSuchstring = p1;
-                    strcpy(newF->ersetzung, current->ersetzungsWort);
-                    return newF;
-                }
+        while (*p1 != '\0') {
+            if (strncmp(p1, p2, len) == 0) {
+                newF = malloc(sizeof(Fundstelle));
+                assert(newF);
+                newF->stelleImSuchstring = p1;
+                newF->ersetzung = current;
+                return newF;
             }
             p1++;
         }
         current = current->next;
-    }    
-    return newF;
+    }
+    return NULL;
 }
 
-int replaceAll(char *s)
-{
-    Fundstelle *gefunden = NULL;
-    int i;
-    char *pStart = s, *pEnde;
-    char *subStr, res[200];
-    do
-    {
-        gefunden = find(s);
-        if(gefunden)
-        {
-            int lenB4 = gefunden->stelleImSuchstring - pStart;
-            int wordLen = strlen(gefunden->ersetzung);
+int replaceAll(char *s) {
+    int count = 0;
+    Fundstelle *gefunden;
+    char res[200];
+    
+    char const *p1 = s;
 
-            strncpy(res, s, lenB4);
-            res[lenB4] = '\0';
+    while ((gefunden = find(p1)) != NULL) {
+        int lenBefore = gefunden->stelleImSuchstring - s;
+        int word1Len = strlen(gefunden->ersetzung->ersetzungsWort);
+        int word2Len = strlen(gefunden->ersetzung->suchWort);
 
-            strcat(res, gefunden->ersetzung);
+        strncpy(res, s, lenBefore);
+        res[lenBefore] = '\0';
 
-            strcat(res, gefunden->stelleImSuchstring + wordLen);
-        }
-    } while (gefunden);
+        strcat(res, gefunden->ersetzung->ersetzungsWort);
+        strcat(res, gefunden->stelleImSuchstring + word2Len);
+
+        strcpy(s, res);
+
+        p1 = gefunden->stelleImSuchstring + word1Len;
+
+        free(gefunden);
+        count++;
+    }
+    
+    return count;
 }
 
-int main(int argc, char const *argv[])
-{
 
-    return 0;
-}
