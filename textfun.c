@@ -4,21 +4,25 @@
 #include <assert.h>
 
 #define MAX_WORD_LEN 25
+#define MAX_LINE_LEN 200
 
-typedef struct listEle {
+typedef struct listEle
+{
     char suchWort[MAX_WORD_LEN];
     char ersetzungsWort[MAX_WORD_LEN];
     struct listEle *next;
 } ListEle;
 
-typedef struct {
+typedef struct
+{
     const char *stelleImSuchstring;
     ListEle *ersetzung;
 } Fundstelle;
 
 ListEle *wordList = NULL;
 
-void addPair(const char *such, const char *ersatz) {
+void addPair(const char *such, const char *ersatz)
+{
     ListEle *newEle = malloc(sizeof(ListEle));
     assert(newEle);
     strncpy(newEle->suchWort, such, MAX_WORD_LEN - 1);
@@ -29,9 +33,11 @@ void addPair(const char *such, const char *ersatz) {
     wordList = newEle;
 }
 
-void clearList(void) {
+void clearList(void)
+{
     ListEle *current = wordList;
-    while (current) {
+    while (current)
+    {
         ListEle *temp = current;
         current = current->next;
         free(temp);
@@ -39,15 +45,19 @@ void clearList(void) {
     wordList = NULL;
 }
 
-Fundstelle *find(const char *s) {
+Fundstelle *find(const char *s)
+{
     Fundstelle *newF = NULL;
     ListEle *current = wordList;
-    while (current) {
+    while (current)
+    {
         const char *p1 = s;
         const char *p2 = current->suchWort;
         int len = strlen(p2);
-        while (*p1 != '\0') {
-            if (strncmp(p1, p2, len) == 0) {
+        while (*p1 != '\0')
+        {
+            if (strncmp(p1, p2, len) == 0)
+            {
                 newF = malloc(sizeof(Fundstelle));
                 assert(newF);
                 newF->stelleImSuchstring = p1;
@@ -61,14 +71,16 @@ Fundstelle *find(const char *s) {
     return NULL;
 }
 
-int replaceAll(char *s) {
+int replaceAll(char *s)
+{
     int count = 0;
     Fundstelle *gefunden;
-    char res[200];
-    
+    char res[MAX_LINE_LEN];
+
     char const *p1 = s;
 
-    while ((gefunden = find(p1)) != NULL) {
+    while ((gefunden = find(p1)) != NULL)
+    {
         int lenBefore = gefunden->stelleImSuchstring - s;
         int word1Len = strlen(gefunden->ersetzung->ersetzungsWort);
         int word2Len = strlen(gefunden->ersetzung->suchWort);
@@ -86,8 +98,44 @@ int replaceAll(char *s) {
         free(gefunden);
         count++;
     }
-    
+    printf("%s\n", s);
     return count;
 }
 
+int main(int argc, char *argv[])
+{
+    int i;
+    char *orgStr, *such, *ersatz, *equalSign;
+    char line[MAX_LINE_LEN];
+    if (argc < 2)
+    {
+        printf("Keine Ersetzungen. Bitte Programm starten mit verbotenesWort=Ersetzung");
+        assert(argc < 2);
+    }
+    else
+    {
+        for (i = 1; i < argc; i++)
+        {
+            orgStr = argv[i];
+            equalSign = strstr(orgStr, "=");
 
+            if (!equalSign)
+            {
+                printf("Formatierungsfehler. Bitte nochmal versuchen: verbotenesWort=Ersetzung");
+                assert(!equalSign);
+            }
+
+            *equalSign = '\0';
+            such = orgStr;
+            ersatz = equalSign + 1;
+            printf("Suche: %s\t Ersetze: %s\n", such, ersatz);
+            addPair(such, ersatz);
+        }
+    }
+
+    while (fgets(line, MAX_LINE_LEN, stdin) != NULL)
+    {
+        replaceAll(line);
+    }
+    return 0;
+}

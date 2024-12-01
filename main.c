@@ -1,5 +1,7 @@
 #include "textfun.h"
 #include <stdio.h>
+#include <assert.h>
+#include <string.h>
 
 int main(void) {
     char line[200] = "Der Glogomir hat mein Haus abgenommen.";
