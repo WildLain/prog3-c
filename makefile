@@ -2,8 +2,6 @@
 CC = gcc
 CFLAGS = -g -ansi -pedantic -Wall
 
-all: glogomat
-
 glogomat.out: main.o textfun.o
 	$(CC) $(CFLAGS) main.o textfun.o -o glogomat
 

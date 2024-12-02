@@ -2,6 +2,7 @@
 #define TEXTFUN_H
 
 #define MAX_WORD_LEN 25
+#define MAX_LINE_LEN 200
 
 typedef struct listEle {
     char suchWort[MAX_WORD_LEN];
