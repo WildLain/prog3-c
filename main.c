@@ -10,8 +10,7 @@ int main(int argc, char *argv[])
     char line[MAX_LINE_LEN];
     if (argc < 2)
     {
-        printf("Keine Ersetzungen. Bitte Programm starten mit verbotenesWort=Ersetzung");
-        assert(argc < 2);
+        loadFromFile();
     }
     else
     {
@@ -39,7 +38,7 @@ int main(int argc, char *argv[])
         line[MAX_LINE_LEN-1] = '\0'; 
         replaceAll(line);
     }
-    saveFile();
+    if(argc > 1)    saveFile();
     clearList();
     return 0;
 }

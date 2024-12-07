@@ -150,3 +150,31 @@ void saveFile(void) {
         }
     }
 }
+
+void loadFromFile(void) {
+    FILE *load;
+    char line[MAX_LINE_LEN];
+    char such[MAX_WORD_LEN], ersatz[MAX_WORD_LEN];
+
+    /*Datei im Lesemodus öffnen*/
+    load = fopen("glogomir.txt", "r");
+    if(!load)  {
+        fprintf(stderr, "glogomir.txt nicht gefunden.\n");
+        return;
+    }
+
+    /*Zeilenweise Datei durchgehen und der Struktur hinzufügen*/
+    while(fgets(line, MAX_LINE_LEN, load) != NULL) {
+        /*
+        %24[^=]     Liest bis zu 24 Zeichen ein, die keine Gleichheitszeichen (=)
+        %24[^\n]    Liest 24 Zeichen bis zum/ohne Zeilenumbruch ein
+        */
+        if(sscanf(line, "%24[^=]=%24[^\n]", such, ersatz) == 2 ) {
+            addPair(such, ersatz);
+        } else {
+            fprintf(stderr, "Fehler beim einlesen.\n");
+            return;
+        }
+    }
+    fclose(load);
+}
