@@ -28,7 +28,7 @@
 #endif
 int main(int argc, char *argv[]) {
     enum {STRLEN = 256};
-    int i,j;
+    int i;
     int width = (strlen(SPRUCH) + (2 * SIZE) + 2);
     char zeile[STRLEN];
     char leerzeile[STRLEN];

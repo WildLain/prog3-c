@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
         line[MAX_LINE_LEN-1] = '\0'; 
         replaceAll(line);
     }
+    saveFile();
     clearList();
     return 0;
 }

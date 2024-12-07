@@ -4,7 +4,7 @@
 #include <assert.h>
 
 #define MAX_WORD_LEN 25
-#define MAX_LINE_LEN 200
+#define MAX_LINE_LEN 255
 
 typedef struct listEle
 {
@@ -63,8 +63,8 @@ Fundstelle *find(const char *s)
     Fundstelle *newF = NULL;
     ListEle *current = wordList;
     int i;
-    if(!current) EXIT_FAILURE;
     char a, b;
+    if(!current) EXIT_FAILURE;
     while (current)
     {
         const char *p1 = s;
@@ -128,3 +128,25 @@ int replaceAll(char *s)
     return count;
 }
 
+void saveFile(void) {
+    FILE *save; /* FILE-Zeiger zum Zugriff auf Datei*/
+    ListEle *current; /*aktuelles Listen-Element*/
+
+    current = wordList;
+    if(current == NULL) {
+        printf("Fehler beim Speichern: Wortliste ist leer.\n");
+        return;
+    }
+    save = fopen("glogomir.txt", "w");
+    if(!save) {
+        fprintf(stderr, "Fehler beim schreiben auf glogomir.txt\n");
+        perror("Details");
+        return;
+    } else {
+        while(current) {
+            /*schreiben der Wortpaare in die Save-File*/
+            fprintf(save, "%s=%s\n", current->suchWort, current->ersetzungsWort);
+            current = current->next;
+        }
+    }
+}
