@@ -46,10 +46,15 @@ int main(int argc, char *argv[])
 
     if (strcmp(argv[1], encrypt) == 0)
     {
+        FILE *fptr;
+        fptr = fopen("encrypted.txt", "a");
         while ((scanf("%c", &input) != EOF))
         {
-            printf("%c", crypt(input, alph, cryp));
+            /*printf("%c", crypt(input, alph, cryp));*/
+            fprintf(fptr, "%c", crypt(input, alph, cryp));
+
         }
+        fclose(fptr);
     }
     else if (strcmp(argv[1], decrypt) == 0)
     {
